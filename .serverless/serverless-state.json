@@ -10,6 +10,22 @@
       "stage": "dev",
       "region": "us-east-1",
       "lambdaHashingVersion": "20201221",
+      "environment": {
+        "CANDIDATE_TABLE": "candidate-service-dev",
+        "CANDIDATE_EMAIL": "candidate-email-dev"
+      },
+      "iamRoleStatements": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "dynamodb:Query",
+            "dynamodb:Scan",
+            "dynamodb:GetItem",
+            "dynamodb:PutItem"
+          ],
+          "Resource": "*"
+        }
+      ],
       "versionFunctions": true,
       "compiledCloudFormationTemplate": {
         "AWSTemplateFormatVersion": "2010-09-09",
@@ -146,6 +162,9 @@
                             "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/candidate-service-dev*:*:*"
                           }
                         ]
+                      },
+                      {
+                        "$ref": "$[\"service\"][\"provider\"][\"iamRoleStatements\"][0]"
                       }
                     ]
                   }
@@ -174,7 +193,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/candidate-service/dev/1660170740089-2022-08-10T22:32:20.089Z/candidate-service.zip"
+                "S3Key": "serverless/candidate-service/dev/1660179146368-2022-08-11T00:52:26.368Z/candidate-service.zip"
               },
               "Handler": "api/candidate.submit",
               "Runtime": "nodejs12.x",
@@ -182,6 +201,12 @@
               "MemorySize": 128,
               "Timeout": 6,
               "Description": "Submit candidate information and starts inteview process.",
+              "Environment": {
+                "Variables": {
+                  "CANDIDATE_TABLE": "candidate-service-dev",
+                  "CANDIDATE_EMAIL": "candidate-email-dev"
+                }
+              },
               "Role": {
                 "Fn::GetAtt": [
                   "IamRoleLambdaExecution",
@@ -193,14 +218,14 @@
               "CandidateSubmisisonLogGroup"
             ]
           },
-          "CandidateSubmisisonLambdaVersionu1qs3WrnxXODXq1hOUPErOH1CBk9dDk9Xwshndehq0": {
+          "CandidateSubmisisonLambdaVersionhWxwyaXhrapyQIQmdon0zcly4fuvQLWaRy7F7htU": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CandidateSubmisisonLambdaFunction"
               },
-              "CodeSha256": "BY7TY8Ap2Bf9qzB2hktIBGug/f0me6xbY3+o4AJGHH0=",
+              "CodeSha256": "ypgW0zNDftgKp4U/JieQr+DoDtIH/SYXavO0/LEwqS4=",
               "Description": "Submit candidate information and starts inteview process."
             }
           },
@@ -277,7 +302,7 @@
               "CandidateSubmisisonLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayDeployment1660170739005": {
+          "ApiGatewayDeployment1660179144636": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -325,6 +350,32 @@
                 ]
               }
             }
+          },
+          "CandidatesDynamoDbTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "id",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "id",
+                  "KeyType": "HASH"
+                }
+              ],
+              "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+              },
+              "StreamSpecification": {
+                "StreamViewType": "NEW_AND_OLD_IMAGES"
+              },
+              "TableName": "candidate-service-dev"
+            }
           }
         },
         "Outputs": {
@@ -339,7 +390,7 @@
           "CandidateSubmisisonLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CandidateSubmisisonLambdaVersionu1qs3WrnxXODXq1hOUPErOH1CBk9dDk9Xwshndehq0"
+              "Ref": "CandidateSubmisisonLambdaVersionhWxwyaXhrapyQIQmdon0zcly4fuvQLWaRy7F7htU"
             },
             "Export": {
               "Name": "sls-candidate-service-dev-CandidateSubmisisonLambdaFunctionQualifiedArn"
@@ -478,8 +529,39 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "CandidateSubmisisonLambdaVersionu1qs3WrnxXODXq1hOUPErOH1CBk9dDk9Xwshndehq0"
+        "versionLogicalId": "CandidateSubmisisonLambdaVersionhWxwyaXhrapyQIQmdon0zcly4fuvQLWaRy7F7htU"
       }
+    },
+    "resources": {
+      "Resources": {
+        "CandidatesDynamoDbTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "id",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "id",
+                "KeyType": "HASH"
+              }
+            ],
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
+            },
+            "StreamSpecification": {
+              "StreamViewType": "NEW_AND_OLD_IMAGES"
+            },
+            "TableName": "candidate-service-dev"
+          }
+        }
+      },
+      "Outputs": {}
     },
     "configValidationMode": "warn",
     "serviceFilename": "serverless.yml",
@@ -493,6 +575,9 @@
       },
       "functions": {
         "$ref": "$[\"service\"][\"functions\"]"
+      },
+      "resources": {
+        "$ref": "$[\"service\"][\"resources\"]"
       }
     },
     "layers": {},
@@ -500,7 +585,7 @@
     "artifact": "/Users/ishsnachez/Practice/coding-round-evaluator/candidate-service/.serverless/candidate-service.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/candidate-service/dev/1660170740089-2022-08-10T22:32:20.089Z",
+    "artifactDirectoryName": "serverless/candidate-service/dev/1660179146368-2022-08-11T00:52:26.368Z",
     "artifact": "candidate-service.zip"
   }
 }

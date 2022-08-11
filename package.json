@@ -1,0 +1,23 @@
+{
+  "name": "candidate-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DeveloperIsh1179/dynamodb-practice.git"
+  },
+  "author": "DeveloperIsh1179",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DeveloperIsh1179/dynamodb-practice/issues"
+  },
+  "homepage": "https://github.com/DeveloperIsh1179/dynamodb-practice#readme",
+  "dependencies": {
+    "bluebird": "^3.7.2",
+    "uuid": "^8.3.2"
+  }
+}
