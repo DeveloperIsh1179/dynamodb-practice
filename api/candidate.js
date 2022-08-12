@@ -16,7 +16,7 @@ module.exports.submit = (event, context, callback) => {
  
   if (typeof fullname !== 'string' || typeof email !== 'string' || typeof experience !== 'number') {
     console.error('Validation Failed');
-    callback(new Error('Couldn\'t submit candidate because of validation errors.'));
+    callback(new Error('Couldn\'t submit candidate because of validation errors!'));
     return;
   }
  
